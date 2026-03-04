@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMOランシステム | パターンE</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --stone: #f4f1eb;
+  --stone2: #ede9e0;
+  --ink: #1c1810;
+  --ink-light: #3d3628;
+  --warm-gray: #8c8070;
+  --gold: #9a7d3a;
+  --gold-light: #c4a35a;
+  --navy: #1a2d4a;
+  --red: #8b2020;
+  --border: #d8d0c0;
+  --white: #fdfcf9;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Noto Sans JP',sans-serif; background:var(--white); color:var(--ink); }
+
+/* HEADER */
+header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(253,252,249,.97); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 56px; height:72px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo { display:flex; flex-direction:column; text-decoration:none; gap:2px; }
+.logo-jp { font-family:'Zen Old Mincho',serif; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:.08em; }
+.logo-en { font-size:10px; color:var(--warm-gray); letter-spacing:.15em; text-transform:uppercase; }
+.logo-badge-wrap { display:flex; align-items:center; gap:6px; margin-top:2px; }
+.logo-badge { font-size:10px; color:var(--gold); border:1px solid var(--gold-light); padding:1px 6px; letter-spacing:.05em; }
+nav { display:flex; align-items:center; gap:32px; }
+nav a { color:var(--warm-gray); text-decoration:none; font-size:13px; letter-spacing:.03em; transition:color .2s; }
+nav a:hover { color:var(--ink); }
+.nav-cta {
+  background:var(--navy); color:white !important;
+  padding:10px 22px; font-size:13px; font-weight:500;
+  letter-spacing:.05em;
+}
+
+/* HERO */
+.hero {
+  padding-top:72px; min-height:100vh;
+  background:var(--stone);
+  display:grid; grid-template-columns:1fr 1fr;
+  position:relative; overflow:hidden;
+}
+.hero::after {
+  content:''; position:absolute;
+  top:0; bottom:0; left:50%;
+  width:1px; background:var(--border);
+}
+.hero-left {
+  padding:80px 72px 80px 80px;
+  display:flex; flex-direction:column; justify-content:center;
+  position:relative;
+}
+.hero-kamon {
+  position:absolute; top:60px; right:60px;
+  width:80px; height:80px; opacity:.08;
+  border:2px solid var(--ink); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px;
+}
+.hero-small { font-size:11px; letter-spacing:.2em; color:var(--gold); text-transform:uppercase; margin-bottom:28px; }
+h1 {
+  font-family:'Zen Old Mincho',serif;
+  font-size:clamp(34px,4vw,54px);
+  font-weight:700; line-height:1.7;
+  color:var(--ink); margin-bottom:32px;
+}
+h1 em { font-style:normal; color:var(--navy); position:relative; }
+h1 em::after { content:''; position:absolute; bottom:4px; left:0; right:0; height:1px; background:var(--navy); opacity:.3; }
+.hero-lead { font-size:15px; color:var(--warm-gray); line-height:2.1; margin-bottom:48px; max-width:460px; font-weight:300; }
+.hero-btns { display:flex; gap:14px; }
+.btn-ink { background:var(--ink); color:white; padding:14px 32px; text-decoration:none; font-size:14px; font-weight:500; letter-spacing:.05em; transition:background .2s; }
+.btn-ink:hover { background:var(--navy); }
+.btn-line { border:1px solid var(--border); color:var(--ink); padding:14px 32px; text-decoration:none; font-size:14px; letter-spacing:.05em; transition:border-color .2s; }
+.btn-line:hover { border-color:var(--ink); }
+
+.hero-right { padding:80px 80px 80px 72px; display:flex; flex-direction:column; justify-content:center; gap:0; }
+.stat-block { padding:36px 0; border-bottom:1px solid var(--border); display:flex; align-items:baseline; gap:16px; }
+.stat-block:first-child { padding-top:0; }
+.stat-block:last-child { border-bottom:none; padding-bottom:0; }
+.sb-num { font-family:'Zen Old Mincho',serif; font-size:52px; font-weight:700; color:var(--navy); line-height:1; }
+.sb-unit { font-size:16px; color:var(--gold); margin-left:2px; font-weight:700; }
+.sb-label { font-size:13px; color:var(--warm-gray); }
+
+/* SECTION */
+section { padding:96px 80px; }
+.inner { max-width:1200px; margin:0 auto; }
+.sec-kamon { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+.sec-line { flex:1; height:1px; background:var(--border); }
+.sec-mark { font-size:12px; letter-spacing:.2em; color:var(--gold); text-transform:uppercase; }
+h2 { font-family:'Zen Old Mincho',serif; font-size:clamp(26px,2.8vw,40px); font-weight:700; color:var(--ink); margin-bottom:14px; line-height:1.5; }
+.sec-sub { font-size:14px; color:var(--warm-gray); line-height:2; max-width:520px; }
+
+/* REASONS */
+.reasons { background:var(--stone2); }
+.reason-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); margin-top:56px; }
+.reason-card { background:var(--white); padding:44px 40px; position:relative; overflow:hidden; transition:background .3s; }
+.reason-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gold); transform:scaleY(0); transition:transform .3s; transform-origin:top; }
+.reason-card:hover::before { transform:scaleY(1); }
+.r-num { font-family:'Zen Old Mincho',serif; font-size:11px; letter-spacing:.15em; color:var(--gold); margin-bottom:16px; }
+.r-title { font-size:16px; font-weight:700; color:var(--ink); margin-bottom:12px; line-height:1.6; }
+.r-body { font-size:13px; color:var(--warm-gray); line-height:2; }
+
+/* SERVICES */
+.services { background:var(--navy); }
+.services h2 { color:white; }
+.services .sec-mark { color:var(--gold-light); }
+.services .sec-line { background:rgba(255,255,255,.1); }
+.svc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,.06); margin-top:56px; }
+.svc-item { background:var(--navy); padding:40px 28px; border-top:2px solid transparent; transition:border-color .3s; }
+.svc-item:hover { border-color:var(--gold-light); }
+.svc-title { font-family:'Zen Old Mincho',serif; font-size:17px; font-weight:700; color:white; margin-bottom:14px; }
+.svc-body { font-size:13px; color:rgba(255,255,255,.45); line-height:1.9; margin-bottom:24px; }
+.svc-link { font-size:12px; color:var(--gold-light); text-decoration:none; letter-spacing:.05em; }
+
+/* CASES */
+.cases { background:var(--stone); }
+.cases-list { display:flex; flex-direction:column; gap:0; margin-top:56px; }
+.case-row { display:grid; grid-template-columns:160px 1fr 1fr; gap:0; align-items:center; padding:28px 0; border-bottom:1px solid var(--border); }
+.case-row:first-child { border-top:1px solid var(--border); }
+.cr-ind { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
+.cr-name { font-size:16px; font-weight:700; color:var(--ink); padding:0 32px; }
+.cr-badge { display:inline-block; border:1px solid var(--border); color:var(--warm-gray); font-size:11px; padding:4px 10px; letter-spacing:.03em; }
+.cases-note { margin-top:28px; font-size:12px; color:var(--warm-gray); }
+
+/* CTA */
+.cta-sec { background:var(--ink); padding:100px 80px; text-align:center; position:relative; overflow:hidden; }
+.cta-sec::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; border:1px solid rgba(255,255,255,.04); border-radius:50%; }
+.cta-sec::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:400px; height:400px; border:1px solid rgba(255,255,255,.04); border-radius:50%; }
+.cta-inner { position:relative; z-index:1; }
+.cta-mark { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-light); margin-bottom:20px; }
+.cta-title { font-family:'Zen Old Mincho',serif; font-size:clamp(22px,2.5vw,36px); font-weight:700; color:white; line-height:1.7; margin-bottom:16px; }
+.cta-sub { font-size:14px; color:rgba(255,255,255,.4); line-height:2; margin-bottom:48px; }
+.cta-btns { display:flex; gap:16px; justify-content:center; }
+.btn-gold { background:var(--gold); color:white; padding:14px 36px; text-decoration:none; font-size:14px; font-weight:500; letter-spacing:.05em; transition:background .2s; }
+.btn-gold:hover { background:var(--gold-light); }
+
+/* FOOTER */
+footer { background:#100e0a; padding:56px 80px 32px; }
+.footer-inner { max-width:1200px; margin:0 auto; }
+.footer-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:48px; margin-bottom:40px; padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,.06); }
+.f-logo { font-family:'Zen Old Mincho',serif; font-size:16px; color:white; margin-bottom:8px; }
+.f-en { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:14px; }
+.f-addr { font-size:12px; color:rgba(255,255,255,.25); line-height:2; }
+.f-head { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--gold-light); margin-bottom:14px; }
+.f-col a { display:block; font-size:13px; color:rgba(255,255,255,.3); text-decoration:none; line-height:2.2; transition:color .2s; }
+.f-col a:hover { color:rgba(255,255,255,.8); }
+.footer-bot { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,.18); }
+
+/* ANIMS */
+.slide-up { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+.slide-up.visible { opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="logo-jp">GMOランシステム株式会社</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+      <span class="logo-en">GMO RUN SYSTEM</span>
+      <span class="logo-badge">東証プライム上場 GMOグループ</span>
+    </div>
+  </a>
+  <nav>
+    <a href="#">サービス</a>
+    <a href="#">製品</a>
+    <a href="#">導入事例</a>
+    <a href="#">会社概要</a>
+    <a href="#" class="nav-cta">無料相談する</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-kamon">紋</div>
+    <p class="hero-small">日本語で頼めて、ベトナム品質で届く</p>
+    <h1>
+      日本のビジネス感覚で動く、<br>
+      <em>ベトナムの開発チーム</em>がいる。
+    </h1>
+    <p class="hero-lead">
+      GMOランシステムは、国内企業の商習慣・品質基準を熟知した専任担当者が、ベトナムの精鋭エンジニアチームとの橋渡しを一貫して担います。言葉の壁も、文化の違いも、私たちが解決します。
+    </p>
+    <div class="hero-btns">
+      <a href="#" class="btn-ink">まずは無料相談する</a>
+      <a href="#" class="btn-line">サービスを見る</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-block">
+      <span class="sb-num">2,000<span class="sb-unit">名超</span></span>
+      <span class="sb-label">精鋭エンジニア</span>
+    </div>
+    <div class="stat-block">
+      <span class="sb-num">135<span class="sb-unit">社</span></span>
+      <span class="sb-label">日本クライアント実績</span>
+    </div>
+    <div class="stat-block">
+      <span class="sb-num">3,300<span class="sb-unit">件超</span></span>
+      <span class="sb-label">累計プロジェクト</span>
+    </div>
+    <div class="stat-block">
+      <span class="sb-num">18<span class="sb-unit">年</span></span>
+      <span class="sb-label">日本市場での実績</span>
+    </div>
+  </div>
+</div>
+
+<section class="reasons">
+  <div class="inner">
+    <div class="slide-up">
+      <div class="sec-kamon"><div class="sec-line"></div><span class="sec-mark">Why Choose Us</span><div class="sec-line"></div></div>
+      <h2>選ばれる4つの理由</h2>
+      <p class="sec-sub">なぜ多くの日本企業がGMOランシステムを選ぶのか</p>
+    </div>
+    <div class="reason-grid slide-up">
+      <div class="reason-card">
+        <p class="r-num">其の一　信頼性</p>
+        <h3 class="r-title">東証プライム上場・GMOグループの一員</h3>
+        <p class="r-body">国内外で70以上のサービスを展開するGMOインターネットグループの日本法人です。上場企業水準のガバナンスのもと、安心してお任せいただけます。</p>
+      </div>
+      <div class="reason-card">
+        <p class="r-num">其の二　コミュニケーション</p>
+        <h3 class="r-title">日本語対応・日本人PMが全工程を管理</h3>
+        <p class="r-body">要件定義から納品まで、日本人プロジェクトマネージャーが一貫担当。オフショア特有のコミュニケーションリスクを解消します。</p>
+      </div>
+      <div class="reason-card">
+        <p class="r-num">其の三　リソース</p>
+        <h3 class="r-title">2,000名超のエンジニアリソース</h3>
+        <p class="r-body">豊富なエンジニアプールから最短2週間でチームを組成。急なボリューム変動にも柔軟にお応えします。</p>
+      </div>
+      <div class="reason-card">
+        <p class="r-num">其の四　コスト品質</p>
+        <h3 class="r-title">品質を保ちながら、コストを最適化</h3>
+        <p class="r-body">ISO9001・CMMI Lv.3取得済みの品質管理プロセスで、国内比で最適化されたコストを実現。品質への不安を払拭します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="inner">
+    <div class="slide-up">
+      <div class="sec-kamon"><div class="sec-line"></div><span class="sec-mark">Services</span><div class="sec-line"></div></div>
+      <h2>サービス一覧</h2>
+      <p class="sec-sub" style="color:rgba(255,255,255,.4)">開発からBPO・AI導入まで、一気通貫で対応します</p>
+    </div>
+    <div class="svc-grid slide-up">
+      <div class="svc-item">
+        <h3 class="svc-title">ソフトウェア開発</h3>
+        <p class="svc-body">要件定義から設計・開発・テスト・保守まで日本人PMが一貫管理。Web・モバイル・業務システムに対応。</p>
+        <a href="#" class="svc-link">詳細を見る →</a>
+      </div>
+      <div class="svc-item">
+        <h3 class="svc-title">マイグレーション</h3>
+        <p class="svc-body">レガシーシステムのリプレイスやクラウド移行を、リスク最小化で推進します。</p>
+        <a href="#" class="svc-link">詳細を見る →</a>
+      </div>
+      <div class="svc-item">
+        <h3 class="svc-title">BPO</h3>
+        <p class="svc-body">ノンコア業務を一括アウトソース。コスト削減と品質維持を両立します。</p>
+        <a href="#" class="svc-link">詳細を見る →</a>
+      </div>
+      <div class="svc-item">
+        <h3 class="svc-title">AI導入支援</h3>
+        <p class="svc-body">相談から実装まで一貫対応。業務課題に合わせたAI活用を日本語でご支援。</p>
+        <a href="#" class="svc-link">詳細を見る →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cases">
+  <div class="inner">
+    <div class="slide-up">
+      <div class="sec-kamon"><div class="sec-line"></div><span class="sec-mark">Case Studies</span><div class="sec-line"></div></div>
+      <h2>導入事例</h2>
+      <p class="sec-sub">業種・規模を問わず、多くの日本企業にご活用いただいています</p>
+    </div>
+    <div class="cases-list slide-up">
+      <div class="case-row">
+        <span class="cr-ind">旅行・観光</span>
+        <span class="cr-name">東武トップツアーズ株式会社</span>
+        <span class="cr-badge">ソフトウェア開発</span>
+      </div>
+      <div class="case-row">
+        <span class="cr-ind">通信・メディア</span>
+        <span class="cr-name">イッツ・コミュニケーションズ株式会社</span>
+        <span class="cr-badge">ソフトウェア開発</span>
+      </div>
+      <div class="case-row">
+        <span class="cr-ind">マーケティング・データ</span>
+        <span class="cr-name">CCCMKホールディングス株式会社</span>
+        <span class="cr-badge">ソフトウェア開発</span>
+      </div>
+    </div>
+    <p class="cases-note">※ 掲載には各社への許諾確認が必要です（現在確認中）</p>
+  </div>
+</section>
+
+<section class="cta-sec">
+  <div class="cta-inner">
+    <p class="cta-mark">Contact</p>
+    <h2 class="cta-title">開発コスト・人材不足・システム老朽化——<br>その課題、GMOランシステムが解決します。</h2>
+    <p class="cta-sub">要件が固まっていなくても大丈夫です。日本人担当者が丁寧にヒアリングし、最適なご提案をいたします。</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-gold">無料相談する</a>
+      <a href="#" class="btn-line" style="color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.15);">サービス一覧を見る</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="f-logo">GMOランシステム株式会社</div>
+        <div class="f-en">GMO RUN SYSTEM Co., Ltd.</div>
+        <div class="f-addr">〒150-0043<br>東京都渋谷区道玄坂1-2-3<br>渋谷フクラス11階<br><br>GMOインターネットグループ（東証プライム上場）</div>
+      </div>
+      <div class="f-col"><p class="f-head">サービス</p><a href="#">ソフトウェア開発</a><a href="#">マイグレーション</a><a href="#">BPO</a><a href="#">AI導入支援</a></div>
+      <div class="f-col"><p class="f-head">会社情報</p><a href="#">会社概要</a><a href="#">導入事例</a><a href="#">採用情報</a></div>
+      <div class="f-col"><p class="f-head">お問い合わせ</p><a href="#">無料相談</a><a href="#">資料ダウンロード</a><a href="#">よくある質問</a></div>
+    </div>
+    <div class="footer-bot">
+      <span>© 2024 GMO RUN SYSTEM Co., Ltd. All Rights Reserved.</span>
+      <span>プライバシーポリシー　利用規約</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } }), {threshold:.08});
+document.querySelectorAll('.slide-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
