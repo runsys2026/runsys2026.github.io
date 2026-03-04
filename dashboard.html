@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>営業MTGダッシュボード 2026年</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Kaku Gothic ProN','Meiryo','Yu Gothic',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px;line-height:1.5;}
+
+/* ── NAV ── */
+.topnav{background:#1a1a2e;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.topnav h1{color:#fff;font-size:15px;font-weight:700;letter-spacing:.04em;padding:14px 0;}
+.topnav .update{color:#a0b4c8;font-size:11px;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:16px 18px;color:#7a90a8;font-size:12px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:.15s;}
+.nav-tab:hover{color:#c8d8e8;}
+.nav-tab.active{color:#60a5fa;border-bottom-color:#60a5fa;}
+
+/* ── LAYOUT ── */
+.page{display:none;padding:22px 24px 40px;max-width:1480px;margin:0 auto;}
+.page.active{display:block;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6b7a99;margin:0 0 10px 2px;}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.mb14{margin-bottom:14px;}
+.mb20{margin-bottom:20px;}
+.mb28{margin-bottom:28px;}
+
+/* ── CARD ── */
+.card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.card-head{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f0f2f5;display:flex;align-items:center;gap:7px;}
+.card-head .dot{width:7px;height:7px;border-radius:50%;background:var(--dc,#3b82f6);flex-shrink:0;}
+
+/* ── KPI ── */
+.kpi{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac,#3b82f6);}
+.kpi .klabel{font-size:10px;font-weight:700;color:#8896aa;letter-spacing:.05em;margin-bottom:6px;}
+.kpi .kval{font-size:24px;font-weight:800;color:#1a1a2e;line-height:1;}
+.kpi .kunit{font-size:12px;font-weight:500;color:#6b7a99;}
+.kpi .ksub{font-size:11px;color:#8896aa;margin-top:5px;}
+.kpi.blue{--ac:#3b82f6;}
+.kpi.green{--ac:#10b981;}
+.kpi.amber{--ac:#f59e0b;}
+.kpi.red{--ac:#ef4444;}
+.kpi.purple{--ac:#8b5cf6;}
+
+/* ── PILL ── */
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill-g{background:#ecfdf5;color:#059669;}
+.pill-y{background:#fffbeb;color:#d97706;}
+.pill-r{background:#fef2f2;color:#dc2626;}
+.pill-b{background:#eff6ff;color:#2563eb;}
+.pill-p{background:#f5f3ff;color:#7c3aed;}
+
+/* ── PROGRESS ── */
+.pbar-wrap{background:#f0f2f5;border-radius:4px;height:6px;overflow:hidden;margin:8px 0 4px;}
+.pbar{height:100%;border-radius:4px;}
+.bg-green{background:#10b981;}
+.bg-yellow{background:#f59e0b;}
+.bg-red{background:#ef4444;}
+.bg-blue{background:#3b82f6;}
+.bg-purple{background:#8b5cf6;}
+.bg-indigo{background:#4f46e5;}
+
+/* ── QUARTERLY ── */
+.qcard{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.qcard .qlabel{font-size:11px;font-weight:700;color:#6b7a99;margin-bottom:8px;}
+.qcard .qval{font-size:20px;font-weight:800;color:#1a1a2e;}
+.qcard .qunit{font-size:11px;color:#9ca3af;}
+.qcard .qtarget{font-size:11px;color:#9ca3af;margin-top:3px;}
+.qcard .qrate{font-size:12px;font-weight:700;margin-top:4px;}
+
+/* ── BIZ ROW ── */
+.biz-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f8f9fb;}
+.biz-row:last-child{border-bottom:none;}
+.biz-name{width:145px;font-size:11px;font-weight:600;color:#374151;flex-shrink:0;}
+.biz-bar-w{flex:1;background:#f0f2f5;border-radius:3px;height:7px;overflow:hidden;}
+.biz-bar{height:100%;border-radius:3px;}
+.biz-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.biz-vals{text-align:right;}
+.biz-actual{font-size:12px;font-weight:700;color:#1a1a2e;}
+.biz-target{font-size:10px;color:#9ca3af;}
+.rate-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;width:46px;text-align:center;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:10px;font-weight:700;color:#6b7a99;padding:7px 9px;border-bottom:2px solid #f0f2f5;white-space:nowrap;}
+.tbl th.r,.tbl td.r{text-align:right;}
+.tbl th.c,.tbl td.c{text-align:center;}
+.tbl td{font-size:11px;padding:8px 9px;border-bottom:1px solid #f8f9fb;vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr.total-row td{font-weight:700;background:#fafbfc;border-top:2px solid #f0f2f5;border-bottom:none;}
+.tbl tr.subtotal td{font-weight:700;background:#fafbfc;}
+.tbl-scroll{overflow-x:auto;overflow-y:auto;max-height:380px;}
+.tbl-scroll .tbl th{position:sticky;top:0;background:#fff;z-index:2;}
+
+/* ── DIFF TABLE (前週比) ── */
+.diff-pos{color:#059669;font-weight:700;}
+.diff-neg{color:#dc2626;font-weight:700;}
+.diff-zero{color:#9ca3af;}
+.rate-good{color:#059669;font-weight:700;}
+.rate-warn{color:#d97706;font-weight:700;}
+.rate-bad{color:#dc2626;font-weight:700;}
+
+/* ── STATUS BADGE ── */
+.sbadge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;white-space:nowrap;}
+.s-contract{background:#ecfdf5;color:#059669;}
+.s-naiji{background:#eff6ff;color:#2563eb;}
+.s-shodan{background:#fefce8;color:#ca8a04;}
+.s-mitsumori{background:#f5f3ff;color:#7c3aed;}
+.s-hikiai{background:#fff7ed;color:#c2410c;}
+.s-shitchuu{background:#fef2f2;color:#dc2626;}
+
+/* ── CHANGE TAG ── */
+.ctag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;white-space:nowrap;}
+.ctag-new{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.ctag-up{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
+.ctag-status{background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe;}
+.ctag-lost{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+
+/* ── GROUP PILL ── */
+.ginner{background:#dbeafe;color:#1d4ed8;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;}
+.gouter{background:#e0f2fe;color:#0369a1;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;}
+
+/* ── FUNNEL ── */
+.funnel-wrap{display:flex;flex-direction:column;gap:6px;}
+.funnel-row{display:flex;align-items:center;gap:10px;}
+.funnel-label{width:80px;font-size:11px;font-weight:600;color:#374151;flex-shrink:0;}
+.funnel-bar-w{flex:1;background:#f0f2f5;border-radius:4px;height:28px;overflow:hidden;position:relative;}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;transition:width .6s ease;}
+.funnel-bar span{color:#fff;font-size:10px;font-weight:700;white-space:nowrap;}
+.funnel-right{width:120px;text-align:right;flex-shrink:0;}
+.funnel-amt{font-size:12px;font-weight:700;color:#1a1a2e;}
+.funnel-cnt{font-size:10px;color:#9ca3af;}
+
+/* ── MONTHLY BAR CHART ── */
+.monthly-chart{display:flex;align-items:flex-end;gap:5px;height:160px;padding-top:20px;}
+.month-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.month-stack{width:100%;display:flex;flex-direction:column-reverse;gap:1px;border-radius:4px 4px 0 0;overflow:hidden;}
+.month-seg{width:100%;min-height:2px;}
+.month-label{font-size:9px;color:#6b7a99;margin-top:4px;white-space:nowrap;}
+.month-total{font-size:9px;font-weight:700;color:#374151;margin-bottom:2px;}
+
+/* ── PERSON TABLE ── */
+.person-bar-w{width:100px;background:#f0f2f5;border-radius:3px;height:6px;overflow:hidden;display:inline-block;vertical-align:middle;}
+.person-bar{height:100%;border-radius:3px;background:#3b82f6;}
+
+/* ── WEEK-DIFF TABLE ── */
+.wdiff-section{margin-bottom:24px;}
+.wdiff-section .wdiff-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.wdiff-section .wdiff-title .dot{width:7px;height:7px;border-radius:50%;background:var(--wdc,#3b82f6);}
+
+/* ── SEARCH / FILTER ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-bar input,.filter-bar select{padding:6px 10px;border:1px solid #e5e7eb;border-radius:7px;font-size:12px;background:#fff;color:#374151;outline:none;}
+.filter-bar input:focus,.filter-bar select:focus{border-color:#60a5fa;}
+.filter-bar input{flex:1;min-width:200px;}
+
+/* ── CONFIDENCE CHART ── */
+.conf-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f8f9fb;}
+.conf-row:last-child{border-bottom:none;}
+.conf-label{width:60px;font-size:11px;font-weight:600;color:#374151;flex-shrink:0;}
+.conf-bar-w{flex:1;background:#f0f2f5;border-radius:4px;height:20px;overflow:hidden;}
+.conf-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;}
+.conf-bar span{color:#fff;font-size:10px;font-weight:700;}
+.conf-right{width:110px;text-align:right;flex-shrink:0;}
+
+/* ── SCROLLABLE ── */
+.scroll-x{overflow-x:auto;}
+.scroll-y{overflow-y:auto;max-height:420px;}
+
+/* ── HIGHLIGHT CELL ── */
+.hl-up{background:#ecfdf5 !important;}
+.hl-dn{background:#fef2f2 !important;}
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<div class="topnav">
+  <div>
+    <h1>営業MTGダッシュボード 2026</h1>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage('summary')">サマリ</div>
+    <div class="nav-tab" onclick="showPage('pipeline')">パイプライン</div>
+    <div class="nav-tab" onclick="showPage('weekly')">前週との差</div>
+    <div class="nav-tab" onclick="showPage('deals')">案件一覧</div>
+  </div>
+  <div class="update">更新：2026年3月4日</div>
+</div>
+
+<!-- ========================================================
+     PAGE 1: サマリ
+     ======================================================== -->
+<div id="page-summary" class="page active">
+
+  <!-- KPI ROW -->
+  <div class="g5 mb14">
+    <div class="kpi blue">
+      <div class="klabel">年間売上目標</div>
+      <div class="kval">2,140<span class="kunit"> M円</span></div>
+      <div class="ksub">Full Year Target</div>
+    </div>
+    <div class="kpi amber">
+      <div class="klabel">年間売上見込み</div>
+      <div class="kval">1,966<span class="kunit"> M円</span></div>
+      <div class="ksub">差分 <strong style="color:#ef4444">▲174 M</strong></div>
+    </div>
+    <div class="kpi amber">
+      <div class="klabel">年間達成率</div>
+      <div class="kval">91.9<span class="kunit">%</span></div>
+      <span class="pill pill-y" style="margin-top:6px;display:inline-block;">目標まで 174M</span>
+    </div>
+    <div class="kpi green">
+      <div class="klabel">1Q達成率（確定）</div>
+      <div class="kval">96.1<span class="kunit">%</span></div>
+      <div class="ksub">478M / 498M</div>
+    </div>
+    <div class="kpi purple">
+      <div class="klabel">確度100%+80%計</div>
+      <div class="kval">1,409<span class="kunit"> M円</span></div>
+      <div class="ksub">確度100+80 合算</div>
+    </div>
+  </div>
+
+  <!-- QUARTERLY -->
+  <div class="section-title mb14">四半期別見込み vs 目標</div>
+  <div class="g4 mb20">
+    <div class="qcard">
+      <div class="qlabel">1Q（1〜3月）確定</div>
+      <div class="qval">478<span class="qunit"> M円</span></div>
+      <div class="qtarget">目標：498 M円</div>
+      <div class="pbar-wrap"><div class="pbar bg-yellow" style="width:96.1%"></div></div>
+      <div class="qrate rate-warn">96.1%　▲19.2M</div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">2Q（4〜6月）見込み</div>
+      <div class="qval">492<span class="qunit"> M円</span></div>
+      <div class="qtarget">目標：530 M円</div>
+      <div class="pbar-wrap"><div class="pbar bg-yellow" style="width:92.7%"></div></div>
+      <div class="qrate rate-warn">92.7%　▲38.7M</div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">3Q（7〜9月）見込み</div>
+      <div class="qval">505<span class="qunit"> M円</span></div>
+      <div class="qtarget">目標：576 M円</div>
+      <div class="pbar-wrap"><div class="pbar bg-red" style="width:87.7%"></div></div>
+      <div class="qrate rate-bad">87.7%　▲70.7M</div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">4Q（10〜12月）見込み</div>
+      <div class="qval">491<span class="qunit"> M円</span></div>
+      <div class="qtarget">目標：536 M円</div>
+      <div class="pbar-wrap"><div class="pbar bg-yellow" style="width:91.6%"></div></div>
+      <div class="qrate rate-warn">91.6%　▲45.1M</div>
+    </div>
+  </div>
+
+  <!-- 2COL: 事業別 + 月別 -->
+  <div class="g2 mb20">
+    <!-- 事業区分別 -->
+    <div class="card">
+      <div class="card-head" style="--dc:#3b82f6"><div class="dot"></div>事業区分別　年間見込み vs 目標</div>
+      <div class="funnel-wrap" style="gap:0;">
+        <!-- 開発内 -->
+        <div class="biz-row">
+          <div class="biz-name">開発（グループ内）</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-green" style="width:97.2%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">612 M</div><div class="biz-target">目標 630 M</div></div>
+            <span class="rate-tag pill-g">97.2%</span>
+          </div>
+        </div>
+        <!-- 開発外 -->
+        <div class="biz-row">
+          <div class="biz-name">開発（グループ外）</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-blue" style="width:100%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">217 M</div><div class="biz-target">目標 140 M</div></div>
+            <span class="rate-tag pill-b" style="background:#eff6ff;color:#1d4ed8;">155%</span>
+          </div>
+        </div>
+        <!-- SIer -->
+        <div class="biz-row">
+          <div class="biz-name">SIer</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-red" style="width:83.5%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">1,002 M</div><div class="biz-target">目標 1,200 M</div></div>
+            <span class="rate-tag pill-r">83.5%</span>
+          </div>
+        </div>
+        <!-- SW -->
+        <div class="biz-row">
+          <div class="biz-name">SW販売</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-yellow" style="width:90.1%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">18 M</div><div class="biz-target">目標 20 M</div></div>
+            <span class="rate-tag pill-y">90.1%</span>
+          </div>
+        </div>
+        <!-- BPO -->
+        <div class="biz-row">
+          <div class="biz-name">BPO</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-red" style="width:73.8%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">111 M</div><div class="biz-target">目標 150 M</div></div>
+            <span class="rate-tag pill-r">73.8%</span>
+          </div>
+        </div>
+        <!-- 合計 -->
+        <div class="biz-row" style="background:#fafbfc;border-radius:7px;padding:9px 8px;margin-top:4px;">
+          <div class="biz-name" style="font-weight:700;">合計</div>
+          <div class="biz-bar-w"><div class="biz-bar bg-yellow" style="width:91.9%"></div></div>
+          <div class="biz-right">
+            <div class="biz-vals"><div class="biz-actual">1,966 M</div><div class="biz-target">目標 2,140 M</div></div>
+            <span class="rate-tag pill-y">91.9%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 月別実績 (1Q) -->
+    <div class="card">
+      <div class="card-head" style="--dc:#10b981"><div class="dot"></div>1Q 月別実績（事業区分別）</div>
+      <div class="scroll-x">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>事業区分</th>
+              <th class="r">1月<br><span style="font-weight:400;color:#10b981">確定</span></th>
+              <th class="r">前週比</th>
+              <th class="r">2月<br><span style="font-weight:400;color:#10b981">確定</span></th>
+              <th class="r">前週比</th>
+              <th class="r">3月<br><span style="font-weight:400;color:#f59e0b">見込み</span></th>
+              <th class="r">前週比</th>
+              <th class="r">1Q計</th>
+              <th class="r">達成率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="color:#9ca3af;font-size:10px;">
+              <td>目標</td>
+              <td class="r">150.3M</td><td class="r">—</td>
+              <td class="r">143.0M</td><td class="r">—</td>
+              <td class="r">204.2M</td><td class="r">—</td>
+              <td class="r">497.6M</td><td class="r">—</td>
+            </tr>
+            <tr>
+              <td>開発（GMO内）</td>
+              <td class="r">49.1M</td><td class="r diff-zero">±0</td>
+              <td class="r">45.2M</td><td class="r diff-pos">+0.3M</td>
+              <td class="r">70.7M</td><td class="r diff-pos">+4.1M</td>
+              <td class="r">165.0M</td><td class="r rate-good">+13.4M</td>
+            </tr>
+            <tr>
+              <td>開発（GMO外）</td>
+              <td class="r">15.4M</td><td class="r diff-zero">±0</td>
+              <td class="r">28.5M</td><td class="r diff-pos">+0.1M</td>
+              <td class="r">24.1M</td><td class="r diff-pos">+0.8M</td>
+              <td class="r">68.0M</td><td class="r rate-good">+31.7M</td>
+            </tr>
+            <tr>
+              <td>SIer</td>
+              <td class="r">81.4M</td><td class="r diff-zero">±0</td>
+              <td class="r">61.4M</td><td class="r diff-neg">▲7.2M</td>
+              <td class="r">86.9M</td><td class="r diff-pos">+7.7M</td>
+              <td class="r">229.7M</td><td class="r rate-bad">▲66.4M</td>
+            </tr>
+            <tr>
+              <td>SW販売</td>
+              <td class="r">0.5M</td><td class="r diff-zero">±0</td>
+              <td class="r">0.4M</td><td class="r diff-neg">▲0.2M</td>
+              <td class="r">0.6M</td><td class="r diff-zero">±0</td>
+              <td class="r">1.5M</td><td class="r rate-warn">▲1.2M</td>
+            </tr>
+            <tr>
+              <td>BPO</td>
+              <td class="r">3.7M</td><td class="r diff-zero">±0</td>
+              <td class="r">3.6M</td><td class="r diff-zero">±0</td>
+              <td class="r">4.4M</td><td class="r diff-zero">±0</td>
+              <td class="r">11.7M</td><td class="r rate-good">+0.7M</td>
+            </tr>
+            <tr class="total-row">
+              <td>見込合計</td>
+              <td class="r">151.1M</td><td class="r diff-zero">±0</td>
+              <td class="r">139.8M</td><td class="r diff-neg">▲7.0M</td>
+              <td class="r">187.4M</td><td class="r diff-pos">+12.8M</td>
+              <td class="r">478.4M</td><td class="r">—</td>
+            </tr>
+            <tr class="total-row">
+              <td>達成率</td>
+              <td class="r rate-good">100.5%</td><td class="r diff-zero">—</td>
+              <td class="r rate-warn">97.8%</td><td class="r diff-zero">—</td>
+              <td class="r rate-warn">91.8%</td><td class="r diff-zero">—</td>
+              <td class="r rate-warn">96.1%</td><td class="r diff-zero">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確度別パイプライン（今週 vs 前週） -->
+  <div class="card mb20">
+    <div class="card-head" style="--dc:#8b5cf6"><div class="dot"></div>確度別パイプライン — 今週 vs 前週比較（1〜3月）</div>
+    <div class="scroll-x">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>確度</th>
+            <th class="r">1月 今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r">2月 今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r">3月 今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r">1Q計</th>
+            <th class="r">対目標</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>確度100%</strong></td>
+            <td class="r">135.0M</td><td class="r" style="color:#9ca3af;">134.8M</td><td class="r diff-pos">+0.2M</td>
+            <td class="r">127.3M</td><td class="r" style="color:#9ca3af;">127.0M</td><td class="r diff-pos">+0.2M</td>
+            <td class="r">119.6M</td><td class="r" style="color:#9ca3af;">117.3M</td><td class="r diff-pos">+2.3M</td>
+            <td class="r">381.8M</td>
+            <td class="r rate-warn">▲115.8M</td>
+          </tr>
+          <tr>
+            <td><strong>確度80%</strong></td>
+            <td class="r">14.5M</td><td class="r" style="color:#9ca3af;">14.5M</td><td class="r diff-zero">±0</td>
+            <td class="r">12.6M</td><td class="r" style="color:#9ca3af;">19.8M</td><td class="r diff-neg">▲7.2M</td>
+            <td class="r">57.6M</td><td class="r" style="color:#9ca3af;">45.6M</td><td class="r diff-pos">+12.0M</td>
+            <td class="r">84.7M</td>
+            <td class="r">—</td>
+          </tr>
+          <tr class="subtotal">
+            <td>100%+80% 計</td>
+            <td class="r">149.4M</td><td class="r" style="color:#9ca3af;">149.3M</td><td class="r diff-pos">+0.2M</td>
+            <td class="r">139.8M</td><td class="r" style="color:#9ca3af;">146.8M</td><td class="r diff-neg">▲7.0M</td>
+            <td class="r">177.2M</td><td class="r" style="color:#9ca3af;">162.9M</td><td class="r diff-pos">+14.3M</td>
+            <td class="r">466.4M</td>
+            <td class="r rate-warn">▲31.2M</td>
+          </tr>
+          <tr style="color:#6b7a99;">
+            <td>確度50%</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">5.6M</td><td class="r" style="color:#9ca3af;">7.1M</td><td class="r diff-neg">▲1.5M</td>
+            <td class="r">5.6M</td><td class="r">—</td>
+          </tr>
+          <tr style="color:#6b7a99;">
+            <td>確度30%</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">3.5M</td><td class="r" style="color:#9ca3af;">3.5M</td><td class="r diff-zero">±0</td>
+            <td class="r">3.5M</td><td class="r">—</td>
+          </tr>
+          <tr style="color:#6b7a99;">
+            <td>確度10%</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">0.0M</td><td class="r">—</td><td class="r">—</td>
+            <td class="r">1.0M</td><td class="r" style="color:#9ca3af;">1.0M</td><td class="r diff-zero">±0</td>
+            <td class="r">1.0M</td><td class="r">—</td>
+          </tr>
+          <tr class="total-row">
+            <td>全案件合計</td>
+            <td class="r">151.1M</td><td class="r" style="color:#9ca3af;">151.1M</td><td class="r diff-zero">±0</td>
+            <td class="r">139.8M</td><td class="r" style="color:#9ca3af;">146.8M</td><td class="r diff-neg">▲7.0M</td>
+            <td class="r">187.4M</td><td class="r" style="color:#9ca3af;">174.6M</td><td class="r diff-pos">+12.8M</td>
+            <td class="r">478.4M</td>
+            <td class="r rate-warn">▲19.2M</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-summary -->
+
+
+<!-- ========================================================
+     PAGE 2: パイプライン
+     ======================================================== -->
+<div id="page-pipeline" class="page">
+
+  <!-- ステージ別ファネル + 確度別 -->
+  <div class="g2 mb20">
+    <!-- ステージファネル -->
+    <div class="card">
+      <div class="card-head" style="--dc:#f59e0b"><div class="dot"></div>ステージ別 件数 / 金額（全案件）</div>
+      <div class="funnel-wrap">
+        <div class="funnel-row">
+          <div class="funnel-label">引き合い</div>
+          <div class="funnel-bar-w" style="max-width:calc(100% - 130px);">
+            <div class="funnel-bar bg-purple" style="width:26.5%"><span>112件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt">248 M</div><div class="funnel-cnt">112件</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-label">商談</div>
+          <div class="funnel-bar-w">
+            <div class="funnel-bar bg-indigo" style="width:25.9%"><span>51件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt">242 M</div><div class="funnel-cnt">51件</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-label">見積/提案</div>
+          <div class="funnel-bar-w">
+            <div class="funnel-bar bg-blue" style="width:14.1%"><span>92件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt">132 M</div><div class="funnel-cnt">92件</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-label">内示</div>
+          <div class="funnel-bar-w">
+            <div class="funnel-bar bg-yellow" style="width:61.0%"><span>249件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt">570 M</div><div class="funnel-cnt">249件</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-label">契約</div>
+          <div class="funnel-bar-w">
+            <div class="funnel-bar bg-green" style="width:82.6%"><span>790件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt">774 M</div><div class="funnel-cnt">790件</div></div>
+        </div>
+        <div style="border-top:1px dashed #e5e7eb;margin:8px 0;"></div>
+        <div class="funnel-row">
+          <div class="funnel-label" style="color:#dc2626;">失注</div>
+          <div class="funnel-bar-w">
+            <div class="funnel-bar bg-red" style="width:56.8%;opacity:.6;"><span>280件</span></div>
+          </div>
+          <div class="funnel-right"><div class="funnel-amt" style="color:#dc2626;">531 M</div><div class="funnel-cnt">280件</div></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:10px;border-top:1px solid #f0f2f5;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:#6b7a99;">失注除く合計：<strong style="color:#1a1a2e;">1,966 M</strong></span>
+          <span style="font-size:11px;color:#6b7a99;">失注除く件数：<strong style="color:#1a1a2e;">1,294件</strong></span>
+          <span style="font-size:11px;color:#6b7a99;">失注率：<strong style="color:#dc2626;">21.7%</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 確度別 -->
+    <div class="card">
+      <div class="card-head" style="--dc:#8b5cf6"><div class="dot"></div>確度別パイプライン（失注除く）</div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div class="conf-row">
+          <div class="conf-label">確度100%<br><span style="color:#9ca3af;font-size:9px;">787件</span></div>
+          <div class="conf-bar-w"><div class="conf-bar bg-green" style="width:63.1%;"><span>879 M</span></div></div>
+          <div class="conf-right"><div style="font-size:13px;font-weight:700;">879 M</div><span class="pill pill-g" style="font-size:10px;">44.7%</span></div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-label">確度80%<br><span style="color:#9ca3af;font-size:9px;">300件</span></div>
+          <div class="conf-bar-w"><div class="conf-bar bg-blue" style="width:38.1%;"><span>530 M</span></div></div>
+          <div class="conf-right"><div style="font-size:13px;font-weight:700;">530 M</div><span class="pill pill-b" style="font-size:10px;">26.9%</span></div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-label">確度50%<br><span style="color:#9ca3af;font-size:9px;">65件</span></div>
+          <div class="conf-bar-w"><div class="conf-bar bg-yellow" style="width:19.3%;"><span>269 M</span></div></div>
+          <div class="conf-right"><div style="font-size:13px;font-weight:700;">269 M</div><span class="pill pill-y" style="font-size:10px;">13.7%</span></div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-label">確度30%<br><span style="color:#9ca3af;font-size:9px;">42件</span></div>
+          <div class="conf-bar-w"><div class="conf-bar bg-yellow" style="width:2.3%;opacity:.7;"></div></div>
+          <div class="conf-right"><div style="font-size:13px;font-weight:700;">31.8 M</div><span class="pill pill-y" style="font-size:10px;">1.6%</span></div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-label">確度10%<br><span style="color:#9ca3af;font-size:9px;">92件</span></div>
+          <div class="conf-bar-w"><div class="conf-bar bg-red" style="width:18.4%;opacity:.7;"><span>256 M</span></div></div>
+          <div class="conf-right"><div style="font-size:13px;font-weight:700;">256 M</div><span class="pill pill-r" style="font-size:10px;">13.0%</span></div>
+        </div>
+        <div style="border-top:1px solid #f0f2f5;margin-top:10px;padding-top:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:#374151;">合計（失注除く）</span>
+            <span style="font-size:18px;font-weight:800;color:#1a1a2e;">1,966 M円</span>
+          </div>
+          <div style="margin-top:6px;font-size:11px;color:#6b7a99;">
+            確度100%+80% 合算：<strong style="color:#1a1a2e;">1,409 M</strong>（71.7%）
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月別パイプライン（棒グラフ風） -->
+  <div class="card mb20">
+    <div class="card-head" style="--dc:#f59e0b"><div class="dot"></div>月別 請求見込み（ステージ別）　※1〜12月</div>
+    <div style="overflow-x:auto;">
+      <div style="min-width:900px;">
+        <!-- Legend -->
+        <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">
+          <span style="font-size:10px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#10b981;display:inline-block;"></span>契約</span>
+          <span style="font-size:10px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block;"></span>内示</span>
+          <span style="font-size:10px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#8b5cf6;display:inline-block;"></span>見積/提案</span>
+          <span style="font-size:10px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#4f46e5;display:inline-block;"></span>商談</span>
+          <span style="font-size:10px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#e879f9;display:inline-block;"></span>引き合い</span>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>月</th>
+              <th class="r">合計</th>
+              <th class="r">目標</th>
+              <th class="r">達成率</th>
+              <th class="r">契約</th>
+              <th class="r">内示</th>
+              <th class="r">見積/提案</th>
+              <th class="r">商談</th>
+              <th class="r">引き合い</th>
+              <th style="width:180px;">構成（積み上げ）</th>
+            </tr>
+          </thead>
+          <tbody id="monthly-tbody">
+            <tr><td>1月</td><td class="r">151.1M</td><td class="r" style="color:#9ca3af;">150.3M</td><td class="r rate-good">100.5%</td><td class="r">151.1M</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:100%;"></div></div></td></tr>
+            <tr><td>2月</td><td class="r">139.8M</td><td class="r" style="color:#9ca3af;">143.0M</td><td class="r rate-warn">97.8%</td><td class="r">133.7M</td><td class="r">5.6M</td><td class="r">0.5M</td><td class="r">—</td><td class="r">—</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:95.6%;"></div><div style="background:#f59e0b;width:4.0%;"></div><div style="background:#8b5cf6;width:0.4%;"></div></div></td></tr>
+            <tr><td>3月</td><td class="r">187.4M</td><td class="r" style="color:#9ca3af;">204.2M</td><td class="r rate-warn">91.8%</td><td class="r">154.8M</td><td class="r">24.8M</td><td class="r">4.8M</td><td class="r">1.9M</td><td class="r">1.0M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:82.6%;"></div><div style="background:#f59e0b;width:13.2%;"></div><div style="background:#8b5cf6;width:2.6%;"></div><div style="background:#4f46e5;width:1.0%;"></div><div style="background:#e879f9;width:0.5%;"></div></div></td></tr>
+            <tr><td>4月</td><td class="r">181.2M</td><td class="r" style="color:#9ca3af;">164.3M</td><td class="r rate-good">110.3%</td><td class="r">68.7M</td><td class="r">70.7M</td><td class="r">1.2M</td><td class="r">16.5M</td><td class="r">24.2M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:37.9%;"></div><div style="background:#f59e0b;width:39.0%;"></div><div style="background:#8b5cf6;width:0.7%;"></div><div style="background:#4f46e5;width:9.1%;"></div><div style="background:#e879f9;width:13.4%;"></div></div></td></tr>
+            <tr><td>5月</td><td class="r">128.6M</td><td class="r" style="color:#9ca3af;">169.0M</td><td class="r rate-bad">76.1%</td><td class="r">41.5M</td><td class="r">61.0M</td><td class="r">0.6M</td><td class="r">15.5M</td><td class="r">10.0M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:32.3%;"></div><div style="background:#f59e0b;width:47.4%;"></div><div style="background:#8b5cf6;width:0.5%;"></div><div style="background:#4f46e5;width:12.1%;"></div><div style="background:#e879f9;width:7.8%;"></div></div></td></tr>
+            <tr><td>6月</td><td class="r">181.9M</td><td class="r" style="color:#9ca3af;">197.0M</td><td class="r rate-warn">92.3%</td><td class="r">39.2M</td><td class="r">66.0M</td><td class="r">28.5M</td><td class="r">21.0M</td><td class="r">27.0M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:21.6%;"></div><div style="background:#f59e0b;width:36.3%;"></div><div style="background:#8b5cf6;width:15.7%;"></div><div style="background:#4f46e5;width:11.5%;"></div><div style="background:#e879f9;width:14.8%;"></div></div></td></tr>
+            <tr><td>7月</td><td class="r">154.7M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">30.6M</td><td class="r">61.3M</td><td class="r">19.3M</td><td class="r">28.7M</td><td class="r">14.8M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:19.8%;"></div><div style="background:#f59e0b;width:39.6%;"></div><div style="background:#8b5cf6;width:12.5%;"></div><div style="background:#4f46e5;width:18.5%;"></div><div style="background:#e879f9;width:9.6%;"></div></div></td></tr>
+            <tr><td>8月</td><td class="r">160.7M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">31.7M</td><td class="r">64.9M</td><td class="r">10.0M</td><td class="r">31.7M</td><td class="r">22.4M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:19.7%;"></div><div style="background:#f59e0b;width:40.4%;"></div><div style="background:#8b5cf6;width:6.2%;"></div><div style="background:#4f46e5;width:19.7%;"></div><div style="background:#e879f9;width:13.9%;"></div></div></td></tr>
+            <tr><td>9月</td><td class="r">189.7M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">32.9M</td><td class="r">61.9M</td><td class="r">10.0M</td><td class="r">36.2M</td><td class="r">48.8M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:17.3%;"></div><div style="background:#f59e0b;width:32.6%;"></div><div style="background:#8b5cf6;width:5.3%;"></div><div style="background:#4f46e5;width:19.1%;"></div><div style="background:#e879f9;width:25.7%;"></div></div></td></tr>
+            <tr><td>10月</td><td class="r">140.3M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">29.8M</td><td class="r">47.5M</td><td class="r">10.0M</td><td class="r">28.7M</td><td class="r">24.2M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:21.3%;"></div><div style="background:#f59e0b;width:33.9%;"></div><div style="background:#8b5cf6;width:7.1%;"></div><div style="background:#4f46e5;width:20.5%;"></div><div style="background:#e879f9;width:17.2%;"></div></div></td></tr>
+            <tr><td>11月</td><td class="r">156.9M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">29.8M</td><td class="r">53.0M</td><td class="r">10.0M</td><td class="r">28.7M</td><td class="r">35.4M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:19.0%;"></div><div style="background:#f59e0b;width:33.8%;"></div><div style="background:#8b5cf6;width:6.4%;"></div><div style="background:#4f46e5;width:18.3%;"></div><div style="background:#e879f9;width:22.6%;"></div></div></td></tr>
+            <tr><td>12月</td><td class="r">194.0M</td><td class="r" style="color:#9ca3af;">—</td><td class="r" style="color:#9ca3af;">—</td><td class="r">29.8M</td><td class="r">53.7M</td><td class="r">36.8M</td><td class="r">33.2M</td><td class="r">40.4M</td><td><div style="display:flex;height:14px;border-radius:3px;overflow:hidden;"><div style="background:#10b981;width:15.4%;"></div><div style="background:#f59e0b;width:27.7%;"></div><div style="background:#8b5cf6;width:19.0%;"></div><div style="background:#4f46e5;width:17.1%;"></div><div style="background:#e879f9;width:20.8%;"></div></div></td></tr>
+            <tr class="total-row">
+              <td>合計</td><td class="r">1,966M</td><td class="r">2,140M</td><td class="r rate-warn">91.9%</td>
+              <td class="r">774M</td><td class="r">570M</td><td class="r">132M</td><td class="r">242M</td><td class="r">248M</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 担当者別 -->
+  <div class="card">
+    <div class="card-head" style="--dc:#10b981"><div class="dot"></div>担当者別　案件数 / 金額（失注除く）</div>
+    <div class="scroll-x">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>担当者</th>
+            <th class="r">件数</th>
+            <th class="r">金額</th>
+            <th class="r">VN取分</th>
+            <th style="width:180px;">金額シェア</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Makoto Yamada</td><td class="r">461</td><td class="r">706.7 M</td><td class="r">596.9 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:100%;"></div></div></td></tr>
+          <tr><td>tanaka</td><td class="r">52</td><td class="r">325.3 M</td><td class="r">94.9 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:46.0%;"></div></div></td></tr>
+          <tr><td>Hoang Tuan Vinh</td><td class="r">28</td><td class="r">307.2 M</td><td class="r">256.1 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:43.5%;"></div></div></td></tr>
+          <tr><td>Nguyen Tan Minh</td><td class="r">187</td><td class="r">130.1 M</td><td class="r">113.0 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:18.4%;"></div></div></td></tr>
+          <tr><td>Nguyen Thanh Trung</td><td class="r">108</td><td class="r">121.2 M</td><td class="r">104.0 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:17.1%;"></div></div></td></tr>
+          <tr><td>知之 隠村</td><td class="r">135</td><td class="r">109.2 M</td><td class="r">82.1 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:15.4%;"></div></div></td></tr>
+          <tr><td>Misa Miyagawa</td><td class="r">182</td><td class="r">100.3 M</td><td class="r">83.4 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:14.2%;"></div></div></td></tr>
+          <tr><td>Ryosuke Osumi</td><td class="r">48</td><td class="r">97.7 M</td><td class="r">76.6 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:13.8%;"></div></div></td></tr>
+          <tr><td>Huynh Quoc Khanh</td><td class="r">48</td><td class="r">50.1 M</td><td class="r">44.9 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:7.1%;"></div></div></td></tr>
+          <tr><td>Nguyễn Thành Trung</td><td class="r">32</td><td class="r">15.7 M</td><td class="r">13.4 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:2.2%;"></div></div></td></tr>
+          <tr><td>Tran Bich Ngoc</td><td class="r">13</td><td class="r">2.7 M</td><td class="r">2.4 M</td><td><div class="person-bar-w"><div class="person-bar" style="width:0.4%;"></div></div></td></tr>
+          <tr class="total-row"><td>合計</td><td class="r">1,294</td><td class="r">1,966 M</td><td class="r">1,468 M</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-pipeline -->
+
+
+<!-- ========================================================
+     PAGE 3: 前週との差
+     ======================================================== -->
+<div id="page-weekly" class="page">
+
+  <!-- 前週比サマリKPI -->
+  <div class="g4 mb20">
+    <div class="kpi amber">
+      <div class="klabel">1月 今週↔前週</div>
+      <div class="kval" style="font-size:20px;">151.1M</div>
+      <div class="ksub" style="color:#d97706;font-weight:700;">前週比 ±0</div>
+    </div>
+    <div class="kpi red">
+      <div class="klabel">2月 今週↔前週</div>
+      <div class="kval" style="font-size:20px;">139.8M</div>
+      <div class="ksub" style="color:#dc2626;font-weight:700;">前週比 ▲7.0M ▼</div>
+    </div>
+    <div class="kpi green">
+      <div class="klabel">3月 今週↔前週</div>
+      <div class="kval" style="font-size:20px;">187.4M</div>
+      <div class="ksub" style="color:#059669;font-weight:700;">前週比 +12.8M ▲</div>
+    </div>
+    <div class="kpi amber">
+      <div class="klabel">1Q計 今週</div>
+      <div class="kval" style="font-size:20px;">478.4M</div>
+      <div class="ksub">目標比 ▲19.2M（96.1%）</div>
+    </div>
+  </div>
+
+  <!-- 月別・事業別 前週比テーブル -->
+  <div class="card mb20">
+    <div class="card-head" style="--dc:#f59e0b"><div class="dot"></div>月別・事業区分別　今週 vs 前週比較（1〜3月）
+      <span style="font-size:10px;font-weight:400;color:#9ca3af;margin-left:4px;">2/24 MTG結果との差</span>
+    </div>
+    <div class="scroll-x">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th rowspan="2">事業区分</th>
+            <th colspan="3" class="c" style="border-bottom:1px solid #e5e7eb;">1月（確定）</th>
+            <th colspan="3" class="c" style="border-bottom:1px solid #e5e7eb;">2月（確定）</th>
+            <th colspan="3" class="c" style="border-bottom:1px solid #e5e7eb;">3月（見込み）</th>
+            <th class="r">1Q計</th>
+            <th class="r">目標差</th>
+          </tr>
+          <tr>
+            <th class="r">今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r">今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r">今週</th><th class="r">前週</th><th class="r">差分</th>
+            <th class="r"></th><th class="r"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>開発（GMO内）</td>
+            <td class="r">49.1M</td><td class="r" style="color:#9ca3af">49.1M</td><td class="r diff-zero">±0</td>
+            <td class="r">45.2M</td><td class="r" style="color:#9ca3af">44.9M</td><td class="r diff-pos hl-up">+0.3M</td>
+            <td class="r">70.7M</td><td class="r" style="color:#9ca3af">66.6M</td><td class="r diff-pos hl-up">+4.1M</td>
+            <td class="r">165.0M</td><td class="r rate-good">+13.4M</td>
+          </tr>
+          <tr>
+            <td>開発（GMO外）</td>
+            <td class="r">15.4M</td><td class="r" style="color:#9ca3af">15.4M</td><td class="r diff-zero">±0</td>
+            <td class="r">28.5M</td><td class="r" style="color:#9ca3af">28.3M</td><td class="r diff-pos hl-up">+0.1M</td>
+            <td class="r">24.1M</td><td class="r" style="color:#9ca3af">23.3M</td><td class="r diff-pos hl-up">+0.8M</td>
+            <td class="r">68.0M</td><td class="r rate-good">+31.7M</td>
+          </tr>
+          <tr>
+            <td>SIer</td>
+            <td class="r">81.4M</td><td class="r" style="color:#9ca3af">81.4M</td><td class="r diff-zero">±0</td>
+            <td class="r">61.4M</td><td class="r" style="color:#9ca3af">68.6M</td><td class="r diff-neg hl-dn">▲7.2M</td>
+            <td class="r">86.9M</td><td class="r" style="color:#9ca3af">79.1M</td><td class="r diff-pos hl-up">+7.7M</td>
+            <td class="r">229.7M</td><td class="r rate-bad">▲66.4M</td>
+          </tr>
+          <tr>
+            <td>SW販売</td>
+            <td class="r">0.5M</td><td class="r" style="color:#9ca3af">0.5M</td><td class="r diff-zero">±0</td>
+            <td class="r">0.4M</td><td class="r" style="color:#9ca3af">0.6M</td><td class="r diff-neg hl-dn">▲0.2M</td>
+            <td class="r">0.6M</td><td class="r" style="color:#9ca3af">0.6M</td><td class="r diff-zero">±0</td>
+            <td class="r">1.5M</td><td class="r rate-bad">▲1.2M</td>
+          </tr>
+          <tr>
+            <td>BPO</td>
+            <td class="r">3.7M</td><td class="r" style="color:#9ca3af">3.7M</td><td class="r diff-zero">±0</td>
+            <td class="r">3.6M</td><td class="r" style="color:#9ca3af">3.6M</td><td class="r diff-zero">±0</td>
+            <td class="r">4.4M</td><td class="r" style="color:#9ca3af">4.4M</td><td class="r diff-zero">±0</td>
+            <td class="r">11.7M</td><td class="r rate-good">+0.7M</td>
+          </tr>
+          <tr class="total-row">
+            <td>見込合計</td>
+            <td class="r">151.1M</td><td class="r" style="color:#9ca3af">151.1M</td><td class="r diff-zero">±0</td>
+            <td class="r">139.8M</td><td class="r" style="color:#9ca3af">146.8M</td><td class="r diff-neg">▲7.0M</td>
+            <td class="r">187.4M</td><td class="r" style="color:#9ca3af">174.6M</td><td class="r diff-pos">+12.8M</td>
+            <td class="r">478.4M</td><td class="r rate-warn">▲19.2M</td>
+          </tr>
+          <tr class="total-row">
+            <td>達成率</td>
+            <td class="r rate-good" colspan="2">100.5%</td><td class="r diff-zero">—</td>
+            <td class="r rate-warn" colspan="2">97.8%</td><td class="r diff-neg">▲4.9pt</td>
+            <td class="r rate-warn" colspan="2">91.8%</td><td class="r diff-pos">+6.3pt</td>
+            <td class="r rate-warn">96.1%</td><td class="r">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 案件単位の変化 -->
+  <div class="card">
+    <div class="card-head" style="--dc:#ef4444"><div class="dot"></div>案件単位の変化（ステータス変更・新規追加・金額変更）
+      <span style="font-size:10px;font-weight:400;color:#9ca3af;margin-left:4px;">前回MTG(2/24)との差</span>
+    </div>
+    <div class="tbl-scroll">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>種別</th><th>G内/外</th><th>社名</th><th>案件名</th><th>担当者</th><th>事業</th><th>ステータス</th><th class="r">金額</th><th>請求月</th><th class="r">差分</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="ctag ctag-status">状況変更</span></td><td><span class="gouter">外</span></td><td>ＪＢＣＣ株式会社</td><td>GeneXus開発_中央出版社様PJT_3月</td><td>tanaka</td><td>SIer</td><td><span class="sbadge s-shodan">商談</span>→<span class="sbadge s-contract">契約</span></td><td class="r">2,260,000</td><td>2026/03/31</td><td class="r diff-pos">+2,260,000</td></tr>
+          <tr><td><span class="ctag ctag-status">状況変更</span></td><td><span class="gouter">外</span></td><td>ＪＢＣＣ株式会社</td><td>GeneXus開発_中央出版社様PJT_4〜9月</td><td>tanaka</td><td>SIer</td><td><span class="sbadge s-shodan">商談</span>→<span class="sbadge s-naiji">内示</span></td><td class="r">各1,160〜2,260,000</td><td>〜2026/09</td><td class="r diff-pos">+9,200,000</td></tr>
+          <tr><td><span class="ctag ctag-status">状況変更</span></td><td><span class="gouter">外</span></td><td>株式会社プライム</td><td>酒類卸売業者様_IBMiマイグレ単体テスト_3月</td><td>Huynh Quoc Khanh</td><td>SIer</td><td><span class="sbadge s-naiji">内示</span>→<span class="sbadge s-contract">契約</span></td><td class="r">1,250,000</td><td>2026/03/31</td><td class="r diff-pos">+1,250,000</td></tr>
+          <tr><td><span class="ctag ctag-status">状況変更</span></td><td><span class="gouter">外</span></td><td>株式会社ユニゾンシステムズ</td><td>考査システム開発_2026年3月</td><td>Nguyen Thanh Trung</td><td>SIer</td><td><span class="sbadge s-naiji">内示</span>→<span class="sbadge s-contract">契約</span></td><td class="r">3,480,000</td><td>2026/03/31</td><td class="r diff-pos">+3,480,000</td></tr>
+          <tr><td><span class="ctag ctag-status">状況変更</span></td><td><span class="ginner">内</span></td><td>GMOコネクト株式会社</td><td>減災プラットフォーム　避難所受入機能追加の開発</td><td>Nguyen Thanh Trung</td><td>開発（GMO内）</td><td><span class="sbadge s-mitsumori">見積/提案</span>→<span class="sbadge s-naiji">内示</span></td><td class="r">2,500,000</td><td>2026/03/31</td><td class="r diff-pos">+2,500,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社クレスコ</td><td>システム保守サービス_2026年3月</td><td>Nguyen Tan Minh</td><td>SIer</td><td><span class="sbadge s-contract">契約</span></td><td class="r">260,000</td><td>2026/03/31</td><td class="r diff-pos">+260,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社エムディーピー</td><td>【petitgift.jp】SSL証明書更新費用</td><td>Nguyen Tan Minh</td><td>Other</td><td><span class="sbadge s-naiji">内示</span></td><td class="r">128,000</td><td>2026/03/31</td><td class="r diff-pos">+128,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社新学社</td><td>ドリル案件サーバ保守費用_2026年2月</td><td>Misa Miyagawa</td><td>開発（GMO外）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">167,000</td><td>2026/02/28</td><td class="r diff-pos">+167,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社RKKCS</td><td>相続差押システム Chromium対応分析請負</td><td>Huynh Quoc Khanh</td><td>SIer</td><td><span class="sbadge s-naiji">内示</span></td><td class="r">903,800</td><td>2026/04/30</td><td class="r diff-pos">+903,800</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社ウフル</td><td>【USE-LESS】「ZIP出力」が機能しない調査と対応</td><td>Misa Miyagawa</td><td>開発（GMO外）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">123,330</td><td>2026/02/27</td><td class="r diff-pos">+123,330</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社 アイ・アイ・エム</td><td>AIエージェントのPoC_3月分</td><td>Nguyen Tan Minh</td><td>開発（GMO外）</td><td><span class="sbadge s-naiji">内示</span></td><td class="r">1,030,000</td><td>2026/03/31</td><td class="r diff-pos">+1,030,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社 アイ・アイ・エム</td><td>AIエージェントのPoC_4月分</td><td>Nguyen Tan Minh</td><td>開発（GMO外）</td><td><span class="sbadge s-naiji">内示</span></td><td class="r">1,030,000</td><td>2026/04/30</td><td class="r diff-pos">+1,030,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="ginner">内</span></td><td>GMOインターネット株式会社</td><td>【お名前.com】運用_2026年2月</td><td>Makoto Yamada</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">3,980,000</td><td>2026/02/28</td><td class="r diff-pos">+3,980,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="ginner">内</span></td><td>GMOデジタルラボ株式会社</td><td>HondaGO BikeRental改修（#24571〜#24573）</td><td>Nguyen Thanh Trung</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">108,000</td><td>2026/02/28</td><td class="r diff-pos">+108,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="ginner">内</span></td><td>GMOデジタルラボ株式会社</td><td>HondaGO BikeRental改修（車両保険・レンタル料金改定）</td><td>Nguyen Thanh Trung</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">517,000</td><td>2026/03/31</td><td class="r diff-pos">+517,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="ginner">内</span></td><td>GMOデジタルラボ株式会社</td><td>Oricoシステムの改修 (#24304・#24305)</td><td>Nguyen Thanh Trung</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">163,000</td><td>2026/02/28</td><td class="r diff-pos">+163,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="ginner">内</span></td><td>GMOデジタルラボ株式会社</td><td>三愛石油システムの改修</td><td>Nguyen Thanh Trung</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">730,000</td><td>2026/04/30</td><td class="r diff-pos">+730,000</td></tr>
+          <tr><td><span class="ctag ctag-new">新規追加</span></td><td><span class="gouter">外</span></td><td>株式会社バンカーズ</td><td>二要素認証（2FA）機能の追加（見込み）</td><td>Nguyen Thanh Trung</td><td>SIer</td><td><span class="sbadge s-mitsumori">見積/提案</span></td><td class="r">500,000</td><td>2026/03/31</td><td class="r diff-pos">+500,000</td></tr>
+          <tr><td><span class="ctag ctag-up">金額変更</span></td><td><span class="ginner">内</span></td><td>GMOインターネット株式会社</td><td>【お名前.com】開発案件</td><td>Makoto Yamada</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">3,700,000→4,450,000</td><td>2026/03/31</td><td class="r diff-pos">+750,000</td></tr>
+          <tr><td><span class="ctag ctag-up">金額変更</span></td><td><span class="ginner">内</span></td><td>GMOインターネット株式会社</td><td>【ConoHa2】Mermaid機能追加・改修_2026年2月</td><td>Makoto Yamada</td><td>開発（GMO内）</td><td><span class="sbadge s-contract">契約</span></td><td class="r">700,000→760,000</td><td>2026/02/28</td><td class="r diff-pos">+60,000</td></tr>
+          <tr><td><span class="ctag ctag-up">金額変更</span></td><td><span class="gouter">外</span></td><td>Guide株式会社</td><td>QCラボ（4〜12月各月）</td><td>Makoto Yamada</td><td>SIer</td><td><span class="sbadge s-naiji">内示</span>/<span class="sbadge s-mitsumori">見積</span></td><td class="r">3,410,000→3,733,000/月</td><td>〜2026/12</td><td class="r diff-pos">+323,000/月</td></tr>
+          <tr><td><span class="ctag ctag-lost">失注</span></td><td><span class="gouter">外</span></td><td>株式会社イーディーエー</td><td>見込み（2月）</td><td>Nguyen Thanh Trung</td><td>開発（GMO外）</td><td><span class="sbadge s-shitchuu">失注</span></td><td class="r">2,000,000</td><td>2026/02/28</td><td class="r diff-neg">—</td></tr>
+          <tr><td><span class="ctag ctag-lost">失注</span></td><td><span class="gouter">外</span></td><td>株式会社イーディーエー</td><td>見込み（3月）</td><td>Nguyen Thanh Trung</td><td>開発（GMO外）</td><td><span class="sbadge s-shitchuu">失注</span></td><td class="r">1,000,000</td><td>2026/03/31</td><td class="r diff-neg">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-weekly -->
+
+
+<!-- ========================================================
+     PAGE 4: 案件一覧
+     ======================================================== -->
+<div id="page-deals" class="page">
+  <div class="filter-bar">
+    <input type="text" id="search-input" placeholder="社名・案件名・担当者で検索..." oninput="filterDeals()">
+    <select id="filter-group" onchange="filterDeals()">
+      <option value="">グループ内外：全て</option>
+      <option value="GMOグループ内">グループ内</option>
+      <option value="GMOグループ外">グループ外</option>
+    </select>
+    <select id="filter-biz" onchange="filterDeals()">
+      <option value="">事業：全て</option>
+      <option value="開発（GMO内）">開発（GMO内）</option>
+      <option value="開発（GMO外）">開発（GMO外）</option>
+      <option value="SIer">SIer</option>
+      <option value="SW販売">SW販売</option>
+      <option value="BPO">BPO</option>
+      <option value="Other">Other</option>
+    </select>
+    <select id="filter-status" onchange="filterDeals()">
+      <option value="">ステータス：全て</option>
+      <option value="契約">契約</option>
+      <option value="内示">内示</option>
+      <option value="見積/提案">見積/提案</option>
+      <option value="商談">商談</option>
+      <option value="引き合い">引き合い</option>
+      <option value="失注">失注</option>
+    </select>
+    <select id="filter-kakudo" onchange="filterDeals()">
+      <option value="">確度：全て</option>
+      <option value="100%">100%</option>
+      <option value="80%">80%</option>
+      <option value="50%">50%</option>
+      <option value="30%">30%</option>
+      <option value="10%">10%</option>
+    </select>
+    <span id="deal-count" style="font-size:12px;color:#6b7a99;align-self:center;white-space:nowrap;"></span>
+  </div>
+  <div class="card">
+    <div class="tbl-scroll" style="max-height:calc(100vh - 200px);">
+      <table class="tbl" id="deal-table">
+        <thead>
+          <tr>
+            <th onclick="sortDeals('group')" style="cursor:pointer;">G内外</th>
+            <th onclick="sortDeals('company')" style="cursor:pointer;">社名 ↕</th>
+            <th onclick="sortDeals('name')" style="cursor:pointer;">案件名 ↕</th>
+            <th onclick="sortDeals('person')" style="cursor:pointer;">担当者 ↕</th>
+            <th onclick="sortDeals('biz')" style="cursor:pointer;">事業 ↕</th>
+            <th onclick="sortDeals('status')" style="cursor:pointer;">ステータス ↕</th>
+            <th onclick="sortDeals('kakudo')" style="cursor:pointer;" class="r">確度 ↕</th>
+            <th onclick="sortDeals('amount')" style="cursor:pointer;" class="r">金額 ↕</th>
+            <th onclick="sortDeals('vn')" style="cursor:pointer;" class="r">VN取分 ↕</th>
+            <th onclick="sortDeals('billing')" style="cursor:pointer;" class="r">請求月 ↕</th>
+          </tr>
+        </thead>
+        <tbody id="deal-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /page-deals -->
+
+<script>
+// ========== DATA ==========
+const dealData = [
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"おみせポケットシステムの改修(チケット＃25041の対応)","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"見積/提案","kakudo":"80%","amount":250000,"vn":225000,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"株式会社ウフル","name":"【USE-LESS】「ZIP出力」が機能しない調査と対応","person":"Misa Miyagawa","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":123330,"vn":110997,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社 アイ・アイ・エム","name":"AIエージェントのPoC_4月分","person":"Nguyen Tan Minh","biz":"開発（GMO外）","status":"内示","kakudo":"100%","amount":1030000,"vn":927000,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"株式会社 アイ・アイ・エム","name":"AIエージェントのPoC_3月分","person":"Nguyen Tan Minh","biz":"開発（GMO外）","status":"内示","kakudo":"100%","amount":1030000,"vn":927000,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社クレスコ","name":"システム保守サービス_2026年3月","person":"Nguyen Tan Minh","biz":"SIer","status":"契約","kakudo":"100%","amount":260000,"vn":234000,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社RKKCS","name":"相続差押システム Chromium対応分析請負業務","person":"Huynh Quoc Khanh","biz":"SIer","status":"内示","kakudo":"80%","amount":903800,"vn":813420,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年3月","person":"tanaka","biz":"SIer","status":"契約","kakudo":"100%","amount":2260000,"vn":203400,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年4月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":2260000,"vn":203400,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年5月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":2260000,"vn":203400,"billing":"2026-05"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年6月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":2260000,"vn":203400,"billing":"2026-06"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年7月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":1160000,"vn":104400,"billing":"2026-07"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年8月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":1160000,"vn":104400,"billing":"2026-08"},
+{"group":"GMOグループ外","company":"ＪＢＣＣ株式会社","name":"GeneXus開発_中央出版社様PJT_2026年9月","person":"tanaka","biz":"SIer","status":"内示","kakudo":"80%","amount":1160000,"vn":104400,"billing":"2026-09"},
+{"group":"GMOグループ外","company":"株式会社プライム","name":"酒類卸売業者様_IBMiマイグレ単体テスト_2026年3月","person":"Huynh Quoc Khanh","biz":"SIer","status":"契約","kakudo":"100%","amount":1250000,"vn":1125000,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"Guide株式会社","name":"QCラボ_2026年4月","person":"Makoto Yamada","biz":"SIer","status":"内示","kakudo":"80%","amount":3733000,"vn":3359700,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"Guide株式会社","name":"QCラボ_2026年5月","person":"Makoto Yamada","biz":"SIer","status":"内示","kakudo":"80%","amount":3733000,"vn":3359700,"billing":"2026-05"},
+{"group":"GMOグループ外","company":"Guide株式会社","name":"QCラボ_2026年6月","person":"Makoto Yamada","biz":"SIer","status":"内示","kakudo":"80%","amount":3733000,"vn":3359700,"billing":"2026-06"},
+{"group":"GMOグループ外","company":"株式会社ユニゾンシステムズ","name":"考査システム開発_2026年3月","person":"Nguyen Thanh Trung","biz":"SIer","status":"契約","kakudo":"100%","amount":3480000,"vn":3132000,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社穴吹カレッジサービス","name":"基幹システム(PDX) 案件・見積管理サブシステム開発","person":"Makoto Yamada","biz":"SIer","status":"契約","kakudo":"100%","amount":7227800,"vn":6505020,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社バンカーズ","name":"二要素認証（2FA）機能の追加（見込み）","person":"Nguyen Thanh Trung","biz":"SIer","status":"見積/提案","kakudo":"80%","amount":500000,"vn":450000,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社エムディーピー","name":"【petitgift.jp】SSL証明書更新費用","person":"Nguyen Tan Minh","biz":"Other","status":"内示","kakudo":"80%","amount":128000,"vn":115200,"billing":"2026-03"},
+{"group":"GMOグループ外","company":"株式会社イーディーエー","name":"見込み_2026年2月","person":"Nguyen Thanh Trung","biz":"開発（GMO外）","status":"失注","kakudo":"10%","amount":2000000,"vn":1800000,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社イーディーエー","name":"見込み_2026年3月","person":"Nguyen Thanh Trung","biz":"開発（GMO外）","status":"失注","kakudo":"10%","amount":1000000,"vn":900000,"billing":"2026-03"},
+{"group":"GMOグループ内","company":"GMOコネクト株式会社","name":"減災プラットフォーム　避難所受入機能追加の開発","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"内示","kakudo":"80%","amount":2500000,"vn":2250000,"billing":"2026-03"},
+{"group":"GMOグループ内","company":"GMOインターネット株式会社","name":"【お名前.com】開発案件","person":"Makoto Yamada","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":4450000,"vn":4005000,"billing":"2026-03"},
+{"group":"GMOグループ内","company":"GMOインターネット株式会社","name":"【お名前.com】運用_2026年2月","person":"Makoto Yamada","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":3980000,"vn":3582000,"billing":"2026-02"},
+{"group":"GMOグループ内","company":"GMOインターネット株式会社","name":"【ConoHa2】Mermaid機能追加・改修作業_2026年2月","person":"Makoto Yamada","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":760000,"vn":684000,"billing":"2026-02"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"HondaGO BikeRental改修（#24571〜#24573）","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":108000,"vn":97200,"billing":"2026-02"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"HondaGO BikeRental改修（車両保険・レンタル料金改定）","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":517000,"vn":465300,"billing":"2026-03"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"三愛石油システムの改修","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":730000,"vn":657000,"billing":"2026-04"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"Oricoシステムの改修 (#24304・#24305)","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":163000,"vn":146700,"billing":"2026-02"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"SmartOCRナンバープレートモジュール利用料_2026年2月","person":"Nguyen Thanh Trung","biz":"SW販売","status":"契約","kakudo":"100%","amount":20000,"vn":18000,"billing":"2026-02"},
+{"group":"GMOグループ内","company":"GMOデジタルラボ株式会社","name":"オートウェーブシステム改修 (#24636_#23749)","person":"Nguyen Thanh Trung","biz":"開発（GMO内）","status":"契約","kakudo":"100%","amount":232300,"vn":209070,"billing":"2026-04"},
+{"group":"GMOグループ外","company":"株式会社新学社","name":"ドリル案件サーバ保守費用_2026年2月","person":"Misa Miyagawa","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":167000,"vn":150300,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社新学社","name":"教材販売ECサイト_小学校(保守費)_2026年2月","person":"Misa Miyagawa","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":200000,"vn":180000,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社新学社","name":"教材販売ECサイト_中学校(保守費)_2026年2月","person":"Misa Miyagawa","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":40000,"vn":36000,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"野口コイン株式会社","name":"サーバー費用_2026年2月","person":"Nguyễn Thành Trung","biz":"SW販売","status":"契約","kakudo":"100%","amount":3500,"vn":3150,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"野口コイン株式会社","name":"サーバー保守_2026年2月","person":"Nguyễn Thành Trung","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":6000,"vn":5400,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社NTTデータ ウェーブ","name":"SmartOCR（運転免許証）利用料金_2026年2月","person":"Nguyen Tan Minh","biz":"SW販売","status":"契約","kakudo":"100%","amount":60000,"vn":54000,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社impact mirAI","name":"AWS PISTA サーバー使用料_2026年2月","person":"Nguyen Tan Minh","biz":"SW販売","status":"契約","kakudo":"100%","amount":35000,"vn":31500,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"株式会社 アイ・アイ・エム","name":"ActiveGate監視_2026年2月","person":"Misa Miyagawa","biz":"開発（GMO外）","status":"契約","kakudo":"100%","amount":120000,"vn":108000,"billing":"2026-02"},
+{"group":"GMOグループ外","company":"西部電気工業株式会社","name":"ハーネスフック検知システム_Autoゼロ機能","person":"Huynh Quoc Khanh","biz":"開発（GMO外）","status":"見積/提案","kakudo":"50%","amount":245000,"vn":220500,"billing":"2026-06"}
+];
+
+// ========== NAVIGATION ==========
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ========== DEAL TABLE ==========
+let currentSort = {col: 'billing', dir: 1};
+function renderDeals(data) {
+  const tbody = document.getElementById('deal-tbody');
+  const statusClass = {
+    '契約':'s-contract','内示':'s-naiji','見積/提案':'s-mitsumori',
+    '商談':'s-shodan','引き合い':'s-hikiai','失注':'s-shitchuu'
+  };
+  tbody.innerHTML = data.map(d => `
+    <tr>
+      <td><span class="${d.group==='GMOグループ内'?'ginner':'gouter'}">${d.group==='GMOグループ内'?'内':'外'}</span></td>
+      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${d.company}">${d.company}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${d.name}">${d.name}</td>
+      <td style="white-space:nowrap;">${d.person}</td>
+      <td style="white-space:nowrap;">${d.biz}</td>
+      <td><span class="sbadge ${statusClass[d.status]||''}">${d.status}</span></td>
+      <td class="r">${d.kakudo}</td>
+      <td class="r">${d.amount.toLocaleString()}</td>
+      <td class="r">${d.vn.toLocaleString()}</td>
+      <td class="r" style="white-space:nowrap;">${d.billing}</td>
+    </tr>
+  `).join('');
+  document.getElementById('deal-count').textContent = `${data.length} 件 / 合計 ${(data.reduce((s,d)=>s+d.amount,0)/1e6).toFixed(1)} M円`;
+}
+
+function filterDeals() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const g = document.getElementById('filter-group').value;
+  const b = document.getElementById('filter-biz').value;
+  const s = document.getElementById('filter-status').value;
+  const k = document.getElementById('filter-kakudo').value;
+  let data = dealData.filter(d =>
+    (!q || [d.company,d.name,d.person].some(v => v.toLowerCase().includes(q))) &&
+    (!g || d.group === g) &&
+    (!b || d.biz === b) &&
+    (!s || d.status === s) &&
+    (!k || d.kakudo === k)
+  );
+  data = sortData(data);
+  renderDeals(data);
+}
+
+function sortData(data) {
+  const keyMap = {group:'group',company:'company',name:'name',person:'person',biz:'biz',status:'status',kakudo:'kakudo',amount:'amount',vn:'vn',billing:'billing'};
+  const k = keyMap[currentSort.col] || 'billing';
+  return [...data].sort((a,b) => {
+    let va = a[k], vb = b[k];
+    if (typeof va === 'string') return va.localeCompare(vb, 'ja') * currentSort.dir;
+    return (va - vb) * currentSort.dir;
+  });
+}
+
+function sortDeals(col) {
+  if (currentSort.col === col) currentSort.dir *= -1;
+  else { currentSort.col = col; currentSort.dir = 1; }
+  filterDeals();
+}
+
+// Initial render
+filterDeals();
+</script>
+</body>
+</html>
